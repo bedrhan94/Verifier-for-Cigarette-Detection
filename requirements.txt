@@ -1,0 +1,47 @@
+# ============================================================
+# Sigara tespiti / yüz tanıma / iki kameralı sistem - bağımlılıklar
+# Python 3.10 önerilir (scriptlerde `py -3.10` kullanımı var).
+# Kurulum:  pip install -r requirements.txt
+# Kod taramasıyla tespit edildi (2026-06-22). Sürümler serbest bırakıldı;
+# istersen `pip freeze > requirements.lock.txt` ile kilitle.
+# ============================================================
+
+# --- Çekirdek: detection + training ---
+ultralytics            # YOLO11 / YOLOv8 / RT-DETR (yolo CLI + YOLO sınıfı)
+# torch + torchvision: buraya PIN KOYMA, ELLE kur.
+#   ⚠️ Fine-tune PC'si RTX 5060 Ti (Blackwell, sm_120) => CUDA 12.8 build ZORUNLU:
+#      pip install --upgrade torch torchvision --index-url https://download.pytorch.org/whl/cu128
+#   Eski torch wheel'i => "CUDA error: no kernel image is available" hatasi.
+#   Doğrula: python -c "import torch;print(torch.cuda.get_device_name(0))"
+
+# --- Görüntü / sayısal ---
+opencv-python          # cv2
+numpy
+
+# --- Realtime API + istemci ---
+flask                  # core/apiserver.py
+requests               # live_ops + realtime istemciler
+
+# --- Yüz tanıma ---
+insightface            # buffalo_l (ArcFace + RetinaFace)
+# ⚠️ onnxruntime SÜRÜMÜ PINLI — GEREKÇE:
+#   Bu makinede torch cu128 var (CUDA 12.8 DLL'leri: cublasLt64_12 / cudnn64_9).
+#   onnxruntime-gpu 1.22.0 CUDA-12 build'idir => o DLL'leri kullanir (ekstra CUDA gerekmez);
+#   apiserver import'ta torch/lib'i PATH'e ekler, ArcFace 5060 Ti'de GPU'da kosar.
+#   >=1.23 (ör. 1.27) CUDA-13'e gecti => cublasLt64_13 ister, torch cu128'de YOK => SESSIZCE
+#   CPU'ya duser. AYRICA: 'onnxruntime' (CPU) ile birlikte KURMA — cakisir, GPU provider golgelenir.
+onnxruntime-gpu==1.22.0
+# GPU yoksa: yukarıyı sil, sadece:  onnxruntime
+
+# --- Hiperparametre tuning ---
+optuna                 # tools/_later_training/optuna_smoking_tune.py
+
+# --- Config / veri ---
+pyyaml                 # yaml (config.py, optuna, tracker)
+pandas                 # eval_video_metrics, plotlar, dataset_people
+tqdm                   # dataset_people ilerleme çubukları
+
+# --- Rapor / figür ---
+matplotlib             # plot_metrics_dashboard, plot_master_csv
+openpyxl               # update_experiment_tracker (xlsx)
+reportlab              # make_pdf_report (PDF)

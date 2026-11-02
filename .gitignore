@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Data and media: no human-subject footage, frames or figures belong in this repository
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.jpg
+*.jpeg
+*.png
+*.tif
+*.tiff
+datasets/
+data/
+Full_Dataset/
+CVAT_UPLOAD/
+CVAT_EXPORT/
+Ground_Truth/
+
+# Training artefacts
+runs/
+runs_*/
+*.pt
+
+# Cached features / OOF predictions (derived from human-subject crops)
+*.npz
+crops_sweep/
+
+# Analysis outputs
+outputs/
+*.jsonl
+*.db
+
+# Editors / OS
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
