@@ -50,7 +50,7 @@ checkpoint fetched by `timm`, and the head is trained by the scripts.
 | End-to-end throughput, evaluated configuration | 15.1 – 15.6 FPS | 960 px with unconditional 2×2 tiling, measured on recorded video |
 | Camera input rate | 30 FPS | the evaluated configuration is therefore not real time |
 | Untiled, sequential / batched | 23.7 / 32.8 FPS | synthetic estimates, see below |
-| Attribution concentration, Chefer / rollout | 0.691 / 0.358 | DINOv2-ViT-S/14 encoder, 1 200 crops |
+| Attribution concentration, gradient-weighted attention adaptation / rollout | 0.691 / 0.358 | DINOv2-ViT-S/14 encoder, 1 200 crops |
 
 Three qualifications that matter for reading these numbers.
 
@@ -63,10 +63,10 @@ under them.
 **The attribution reference.** A concentration of 0.10 is the value of a
 perfectly uniform map, not what a random map scores. Because the hottest decile
 is selected from the map itself, a randomly varying map scores higher: the
-measured reference range is about 0.193 – 0.332. Chefer's 0.691 clears that whole
-range; rollout's 0.358 sits just above its upper end. These maps are computed on
-a DINOv2-ViT-S/14 encoder, so they are not a direct quantitative explainability
-measurement of the CLIP verifier.
+measured reference range is about 0.193 – 0.332. The adaptation's 0.691 clears
+that whole range; rollout's 0.358 sits just above its upper end. These maps are
+computed on a DINOv2-ViT-S/14 encoder, so they are not a direct quantitative
+explainability measurement of the CLIP verifier.
 
 **The event gate is a trade, not a free gain.** Removing false events at the
 event level costs more time spent inside a false alarm than filtering per frame
@@ -134,10 +134,10 @@ Grouped by what they evaluate.
 | | `placement_verifier_eval.py` | the camera-placement grid with a matched out-of-fold threshold |
 | | `placement_day_vs_evening.py` | the same grid under daylight and artificial light |
 | | `unseen_subject_verifier.py` | a participant absent from the training pool, both sessions |
-| | `event_gate_designs.py` | five pre-registered per-frame and per-event designs and the causal-gate timing variants |
+| | `event_gate_designs.py` | five per-frame and per-event designs, fixed before the comparison, and the causal-gate timing variants |
 | Cost and interpretability | `end_to_end_throughput.py` | verifier latency and two-stage throughput, batched against sequential |
 | | `attention_rollout.py` | gradient-free attention-rollout attribution |
-| | `chefer_attribution.py` | Chefer transformer attribution and concentration |
+| | `chefer_attribution.py` | gradient-weighted attention-rollout adaptation, after Chefer et al. (2021b), and concentration |
 | Privacy utility | `blur_faces_in_figs.py` | blurs faces in any rendered figure |
 
 ## Data: what is public and what is not
@@ -166,9 +166,9 @@ can be read, not so that it can be re-executed from this repository alone.
   synthetic or placeholder data is provided, and none should be invented to make
   a script run.
 - Feature extraction depends on the pretrained encoder weights served by the
-  model hub. Those weights can change, which shifts absolute values by a few
-  points while preserving the ordering of methods. The cached NPZ is the stable
-  reference.
+  model hub. Those weights can change, which shifts absolute values. What
+  happens to the ordering of methods under a changed encoder was not tested
+  here. The cached NPZ is the stable reference.
 - The throughput measurements depend on the specific GPU and driver stack and
   will not reproduce exactly on other hardware.
 - Several scripts were written for a single machine and read a fixed directory
