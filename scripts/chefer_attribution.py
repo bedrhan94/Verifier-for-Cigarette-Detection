@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""PAPER 2 — Chefer transformer-attribution XAI TAM SURUM.
+"""PAPER 2 — gradient-weighted attention-rollout adaptation (Chefer et al., 2021b) XAI TAM SURUM.
 Feasibility (izole) Chefer'in localize ettigini gostermisti; bu script makale-kalitesinde uretir:
  (A) nitel figur: cig + kolay/zor look-alike ornekleri, Grad-CAM vs Chefer yan yana
  (B) NICEL: N crop uzerinde 'localization concentration' (en sicak %10 patch'teki relevans kutlesi)

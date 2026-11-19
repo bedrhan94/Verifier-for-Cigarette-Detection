@@ -165,10 +165,10 @@ can be read, not so that it can be re-executed from this repository alone.
 - Nothing runs without the private data root described above. No substitute,
   synthetic or placeholder data is provided, and none should be invented to make
   a script run.
-- Feature extraction depends on the pretrained encoder weights served by the
-  model hub. Those weights can change, which shifts absolute values. What
-  happens to the ordering of methods under a changed encoder was not tested
-  here. The cached NPZ is the stable reference.
+- Feature extraction is sensitive to the software stack. One later stack
+  shifted the per-subject mean by about 0.05 while preserving the reported
+  backbone ordering; other stacks, and revisions of the encoder weights served
+  by the model hub, were not tested. The cached NPZ is the stable reference.
 - The throughput measurements depend on the specific GPU and driver stack and
   will not reproduce exactly on other hardware.
 - Several scripts were written for a single machine and read a fixed directory
